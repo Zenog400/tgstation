@@ -22,7 +22,7 @@
 	. = ..()
 	chambered = new /obj/item/ammo_casing/chemgun(src)
 	START_PROCESSING(SSobj, src)
-	create_reagents(100)
+	create_reagents(100, OPENCONTAINER | NO_REACT)
 
 /obj/item/gun/chem/Destroy()
 	. = ..()
