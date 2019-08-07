@@ -4,7 +4,7 @@
 	name = "Computer Design ( NULL ENTRY )"
 	desc = "I promise this doesn't give you syndicate goodies!"
 	build_type = IMPRINTER
-	materials = list(MAT_GLASS = 1000)
+	materials = list(/datum/material/glass = 1000)
 
 /datum/design/board/arcade_battle
 	name = "Computer Design (Battle Arcade Machine)"
@@ -50,6 +50,7 @@
 	name = "Computer Design (AI Upload)"
 	desc = "Allows for the construction of circuit boards used to build an AI Upload Console."
 	id = "aiupload"
+	materials = list(/datum/material/glass = 1000, /datum/material/gold = 2000)
 	build_path = /obj/item/circuitboard/computer/aiupload
 	category = list("Computer Boards")
 	departmental_flags = DEPARTMENTAL_FLAG_SCIENCE
@@ -58,6 +59,7 @@
 	name = "Computer Design (Cyborg Upload)"
 	desc = "Allows for the construction of circuit boards used to build a Cyborg Upload Console."
 	id = "borgupload"
+	materials = list(/datum/material/glass = 1000, /datum/material/gold = 2000)
 	build_path = /obj/item/circuitboard/computer/borgupload
 	category = list("Computer Boards")
 	departmental_flags = DEPARTMENTAL_FLAG_SCIENCE
@@ -285,3 +287,27 @@
 	build_path = /obj/item/circuitboard/computer/apc_control
 	category = list("Computer Boards")
 	departmental_flags = DEPARTMENTAL_FLAG_ENGINEERING
+
+/datum/design/board/nanite_chamber_control
+	name = "Computer Design (Nanite Chamber Control)"
+	desc = "Allows for the construction of circuit boards used to build a new nanite chamber control console."
+	id = "nanite_chamber_control"
+	build_path = /obj/item/circuitboard/computer/nanite_chamber_control
+	category = list("Computer Boards")
+	departmental_flags = DEPARTMENTAL_FLAG_SCIENCE
+
+/datum/design/board/nanite_cloud_control
+	name = "Computer Design (Nanite Cloud Control)"
+	desc = "Allows for the construction of circuit boards used to build a new nanite cloud control console."
+	id = "nanite_cloud_control"
+	build_path = /obj/item/circuitboard/computer/nanite_cloud_controller
+	category = list("Computer Boards")
+	departmental_flags = DEPARTMENTAL_FLAG_SCIENCE
+	
+/datum/design/board/advanced_camera
+	name = "Computer Design (Advanced Camera Console)"
+	desc = "Allows for the construction of circuit boards used to build advanced camera consoles."
+	id = "advanced_camera"
+	build_path = /obj/item/circuitboard/computer/advanced_camera
+	category = list("Computer Boards")
+	departmental_flags = DEPARTMENTAL_FLAG_SECURITY

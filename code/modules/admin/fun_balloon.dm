@@ -92,28 +92,16 @@
 	icon_state = "syndballoon"
 	anchored = TRUE
 
-/obj/effect/station_crash/New()
+/obj/effect/station_crash/Initialize()
+	..()
 	for(var/S in SSshuttle.stationary)
 		var/obj/docking_port/stationary/SM = S
 		if(SM.id == "emergency_home")
 			var/new_dir = turn(SM.dir, 180)
 			SM.forceMove(get_ranged_target_turf(SM, new_dir, rand(3,15)))
 			break
-	qdel(src)
+	return INITIALIZE_HINT_QDEL
 
-
-//Shuttle Build
-
-/obj/effect/shuttle_build
-	name = "shuttle_build"
-	desc = "Some assembly required."
-	icon = 'icons/obj/items_and_weapons.dmi'
-	icon_state = "syndballoon"
-	anchored = TRUE
-
-/obj/effect/shuttle_build/New()
-	SSshuttle.emergency.initiate_docking(SSshuttle.getDock("emergency_home"))
-	qdel(src)
 
 //Arena
 
@@ -170,10 +158,11 @@
 	var/mob/living/M = AM
 	M.forceMove(get_turf(LA))
 	to_chat(M, "<span class='reallybig redtext'>You're trapped in a deadly arena! To escape, you'll need to drag a severed head to the escape portals.</span>")
-	spawn()
-		var/obj/effect/mine/pickup/bloodbath/B = new (M)
-		B.mineEffect(M)
+	INVOKE_ASYNC(src, .proc/do_bloodbath, M)
 
+/obj/effect/forcefield/arena_shuttle_entrance/proc/do_bloodbath(mob/living/L)
+	var/obj/effect/mine/pickup/bloodbath/B = new (L)
+	B.mineEffect(L)
 
 /area/shuttle_arena
 	name = "arena"

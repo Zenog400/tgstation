@@ -14,12 +14,14 @@ SUBSYSTEM_DEF(blackbox)
 							"explosion" = 2,
 							"time_dilation_current" = 3,
 							"science_techweb_unlock" = 2,
-							"round_end_stats" = 2) //associative list of any feedback variables that have had their format changed since creation and their current version, remember to update this
+							"round_end_stats" = 2,
+							"testmerged_prs" = 2) //associative list of any feedback variables that have had their format changed since creation and their current version, remember to update this
 
 /datum/controller/subsystem/blackbox/Initialize()
 	triggertime = world.time
 	record_feedback("amount", "random_seed", Master.random_seed)
 	record_feedback("amount", "dm_version", DM_VERSION)
+	record_feedback("amount", "dm_build", DM_BUILD)
 	record_feedback("amount", "byond_version", world.byond_version)
 	record_feedback("amount", "byond_build", world.byond_build)
 	. = ..()
@@ -294,7 +296,7 @@ Versioning
 	var/lakey = L.lastattackerckey
 	var/sqlbrute = L.getBruteLoss()
 	var/sqlfire = L.getFireLoss()
-	var/sqlbrain = L.getBrainLoss()
+	var/sqlbrain = L.getOrganLoss(ORGAN_SLOT_BRAIN) || BRAIN_DAMAGE_DEATH //getOrganLoss returns null without a brain but a value is required for this column
 	var/sqloxy = L.getOxyLoss()
 	var/sqltox = L.getToxLoss()
 	var/sqlclone = L.getCloneLoss()
@@ -308,7 +310,7 @@ Versioning
 
 	if(!SSdbcore.Connect())
 		return
-	
+
 	sqlname = sanitizeSQL(sqlname)
 	sqlkey = sanitizeSQL(sqlkey)
 	sqljob = sanitizeSQL(sqljob)
@@ -331,5 +333,5 @@ Versioning
 	map = sanitizeSQL(map)
 	var/datum/DBQuery/query_report_death = SSdbcore.NewQuery("INSERT INTO [format_table_name("death")] (pod, x_coord, y_coord, z_coord, mapname, server_ip, server_port, round_id, tod, job, special, name, byondkey, laname, lakey, bruteloss, fireloss, brainloss, oxyloss, toxloss, cloneloss, staminaloss, last_words, suicide) VALUES ('[sqlpod]', '[x_coord]', '[y_coord]', '[z_coord]', '[map]', INET_ATON(IF('[world.internet_address]' LIKE '', '0', '[world.internet_address]')), '[world.port]', [GLOB.round_id], '[SQLtime()]', '[sqljob]', '[sqlspecial]', '[sqlname]', '[sqlkey]', '[laname]', '[lakey]', [sqlbrute], [sqlfire], [sqlbrain], [sqloxy], [sqltox], [sqlclone], [sqlstamina], '[last_words]', [suicide])")
 	if(query_report_death)
-		query_report_death.Execute()
+		query_report_death.Execute(async = TRUE)
 		qdel(query_report_death)

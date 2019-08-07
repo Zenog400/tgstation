@@ -80,28 +80,27 @@
 	icon_state = "power_display"
 	screen_loc = ui_lingchemdisplay
 
-/mob/living/carbon/human/create_mob_hud()
-	if(client && !hud_used)
-		hud_used = new /datum/hud/human(src)
-
-
 /datum/hud/human/New(mob/living/carbon/human/owner)
 	..()
 	owner.overlay_fullscreen("see_through_darkness", /obj/screen/fullscreen/see_through_darkness)
 
+	var/widescreen_layout = FALSE
+	if(owner.client?.prefs?.widescreenpref)
+		widescreen_layout = TRUE
+
 	var/obj/screen/using
 	var/obj/screen/inventory/inv_box
 
-	using = new /obj/screen/craft
-	using.icon = ui_style
-	static_inventory += using
-
 	using = new/obj/screen/language_menu
 	using.icon = ui_style
+	if(!widescreen_layout)
+		using.screen_loc = UI_BOXLANG
 	static_inventory += using
 
 	using = new /obj/screen/area_creator
 	using.icon = ui_style
+	if(!widescreen_layout)
+		using.screen_loc = UI_BOXAREA
 	static_inventory += using
 
 	action_intent = new /obj/screen/act_intent/segmented
@@ -287,10 +286,6 @@
 
 	healthdoll = new /obj/screen/healthdoll()
 	infodisplay += healthdoll
-
-	if(!CONFIG_GET(flag/disable_human_mood))
-		mood = new /obj/screen/mood()
-		infodisplay += mood
 
 	pull_icon = new /obj/screen/pull()
 	pull_icon.icon = ui_style

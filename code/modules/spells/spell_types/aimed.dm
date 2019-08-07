@@ -90,15 +90,15 @@
 
 /obj/effect/proc_holder/spell/aimed/lightningbolt
 	name = "Lightning Bolt"
-	desc = "Fire a high powered lightning bolt at your foes!"
+	desc = "Fire a lightning bolt at your foes! It will jump between targets, but can't knock them down."
 	school = "evocation"
 	charge_max = 200
-	clothes_req = 1
+	clothes_req = TRUE
 	invocation = "UN'LTD P'WAH"
 	invocation_type = "shout"
 	cooldown_min = 30
-	active_icon_state = "lightning"
 	base_icon_state = "lightning"
+	action_icon_state = "lightning0"
 	sound = 'sound/magic/lightningbolt.ogg'
 	active = FALSE
 	projectile_var_overrides = list("tesla_range" = 15, "tesla_power" = 20000, "tesla_flags" = TESLA_MOB_DAMAGE)
@@ -108,10 +108,10 @@
 
 /obj/effect/proc_holder/spell/aimed/fireball
 	name = "Fireball"
-	desc = "This spell fires a fireball at a target and does not require wizard garb."
+	desc = "This spell fires an explosive fireball at a target."
 	school = "evocation"
 	charge_max = 60
-	clothes_req = 0
+	clothes_req = FALSE
 	invocation = "ONI SOMA"
 	invocation_type = "shout"
 	range = 20
@@ -124,12 +124,17 @@
 	deactive_msg = "You extinguish your fireball... for now."
 	active = FALSE
 
+/obj/effect/proc_holder/spell/aimed/fireball/fire_projectile(list/targets, mob/living/user)
+	var/range = 6 + 2*spell_level
+	projectile_var_overrides = list("range" = range)
+	return ..()
+
 /obj/effect/proc_holder/spell/aimed/spell_cards
 	name = "Spell Cards"
-	desc = "Blazing hot rapid-fire homing cards. Banish your foes with its mystical power!"
+	desc = "Blazing hot rapid-fire homing cards. Send your foes to the shadow realm with their mystical power!"
 	school = "evocation"
 	charge_max = 50
-	clothes_req = 0
+	clothes_req = FALSE
 	invocation = "Sigi'lu M'Fan 'Tasia"
 	invocation_type = "shout"
 	range = 40
@@ -137,13 +142,15 @@
 	projectile_amount = 5
 	projectiles_per_fire = 7
 	projectile_type = /obj/item/projectile/spellcard
+	base_icon_state = "spellcard"
+	action_icon_state = "spellcard0"
 	var/datum/weakref/current_target_weakref
 	var/projectile_turnrate = 10
 	var/projectile_pixel_homing_spread = 32
 	var/projectile_initial_spread_amount = 30
 	var/projectile_location_spread_amount = 12
 	var/datum/component/lockon_aiming/lockon_component
-	ranged_clickcd_override = 1
+	ranged_clickcd_override = TRUE
 
 /obj/effect/proc_holder/spell/aimed/spell_cards/on_activation(mob/M)
 	QDEL_NULL(lockon_component)

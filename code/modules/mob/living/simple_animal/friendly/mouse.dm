@@ -13,7 +13,7 @@
 	see_in_dark = 6
 	maxHealth = 5
 	health = 5
-	butcher_results = list(/obj/item/reagent_containers/food/snacks/meat/slab = 1)
+	butcher_results = list(/obj/item/reagent_containers/food/snacks/meat/slab/mouse = 1)
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
 	response_harm   = "splats"
@@ -109,9 +109,38 @@
 	icon_state = "mouse_gray_dead"
 	bitesize = 3
 	eatverb = "devour"
-	list_reagents = list("nutriment" = 3, "vitamin" = 2)
+	list_reagents = list(/datum/reagent/consumable/nutriment = 3, /datum/reagent/consumable/nutriment/vitamin = 2)
 	foodtype = GROSS | MEAT | RAW
-	grind_results = list("blood" = 20, "liquidgibs" = 5)
+	grind_results = list(/datum/reagent/blood = 20, /datum/reagent/liquidgibs = 5)
+
+/obj/item/reagent_containers/food/snacks/deadmouse/examine(mob/user)
+	. = ..()
+	if (reagents?.has_reagent(/datum/reagent/yuck) || reagents?.has_reagent(/datum/reagent/fuel))
+		. += "<span class='warning'>It's dripping with fuel and smells terrible.</span>"
+
+/obj/item/reagent_containers/food/snacks/deadmouse/attackby(obj/item/I, mob/user, params)
+	if(I.is_sharp() && user.a_intent == INTENT_HARM)
+		if(isturf(loc))
+			new /obj/item/reagent_containers/food/snacks/meat/slab/mouse(loc)
+			to_chat(user, "<span class='notice'>You butcher [src].</span>")
+			qdel(src)
+		else
+			to_chat(user, "<span class='warning'>You need to put [src] on a surface to butcher it!</span>")
+	else
+		return ..()
+
+/obj/item/reagent_containers/food/snacks/deadmouse/afterattack(obj/target, mob/living/user, proximity_flag)
+	if(proximity_flag && reagents && target.is_open_container())
+		// is_open_container will not return truthy if target.reagents doesn't exist
+		var/datum/reagents/target_reagents = target.reagents
+		var/trans_amount = reagents.maximum_volume - reagents.total_volume * (4 / 3)
+		if(target_reagents.has_reagent(/datum/reagent/fuel) && target_reagents.trans_to(src, trans_amount))
+			to_chat(user, "<span class='notice'>You dip [src] into [target].</span>")
+			reagents.trans_to(target, reagents.total_volume)
+		else
+			to_chat(user, "<span class='warning'>That's a terrible idea.</span>")
+	else
+		return ..()
 
 /obj/item/reagent_containers/food/snacks/deadmouse/on_grind()
 	reagents.clear_reagents()

@@ -75,7 +75,7 @@
 
 
 /obj/effect/anomaly/attackby(obj/item/I, mob/user, params)
-	if(istype(I, /obj/item/analyzer))
+	if(I.tool_behaviour == TOOL_ANALYZER)
 		to_chat(user, "<span class='notice'>Analyzing... [src]'s unstable field is fluctuating along frequency [format_frequency(aSignal.frequency)], code [aSignal.code].</span>")
 
 ///////////////////////
@@ -95,7 +95,8 @@
 	for(var/mob/living/M in range(0, src))
 		gravShock(M)
 	for(var/mob/living/M in orange(4, src))
-		step_towards(M,src)
+		if(!M.mob_negates_gravity())
+			step_towards(M,src)
 	for(var/obj/O in range(0,src))
 		if(!O.anchored)
 			var/mob/living/target = locate() in view(4,src)
@@ -113,7 +114,7 @@
 
 /obj/effect/anomaly/grav/proc/gravShock(mob/living/A)
 	if(boing && isliving(A) && !A.stat)
-		A.Knockdown(40)
+		A.Paralyze(40)
 		var/atom/target = get_edge_target_turf(A, get_dir(src, get_step_away(A, src)))
 		A.throw_at(target, 5, 1)
 		boing = 0
@@ -190,11 +191,11 @@
 /obj/effect/anomaly/bluespace/anomalyEffect()
 	..()
 	for(var/mob/living/M in range(1,src))
-		do_teleport(M, locate(M.x, M.y, M.z), 4)
+		do_teleport(M, locate(M.x, M.y, M.z), 4, channel = TELEPORT_CHANNEL_BLUESPACE)
 
 /obj/effect/anomaly/bluespace/Bumped(atom/movable/AM)
 	if(isliving(AM))
-		do_teleport(AM, locate(AM.x, AM.y, AM.z), 8)
+		do_teleport(AM, locate(AM.x, AM.y, AM.z), 8, channel = TELEPORT_CHANNEL_BLUESPACE)
 
 /obj/effect/anomaly/bluespace/detonate()
 	var/turf/T = safepick(get_area_turfs(impact_area))
@@ -234,21 +235,23 @@
 				if(!A.Move(newloc) && newloc) // if the atom, for some reason, can't move, FORCE them to move! :) We try Move() first to invoke any movement-related checks the atom needs to perform after moving
 					A.forceMove(newloc)
 
-				spawn()
-					if(ismob(A) && !(A in flashers)) // don't flash if we're already doing an effect
-						var/mob/M = A
-						if(M.client)
-							var/obj/blueeffect = new /obj(src)
-							blueeffect.screen_loc = "WEST,SOUTH to EAST,NORTH"
-							blueeffect.icon = 'icons/effects/effects.dmi'
-							blueeffect.icon_state = "shieldsparkles"
-							blueeffect.layer = FLASH_LAYER
-							blueeffect.plane = FULLSCREEN_PLANE
-							blueeffect.mouse_opacity = MOUSE_OPACITY_TRANSPARENT
-							M.client.screen += blueeffect
-							sleep(20)
-							M.client.screen -= blueeffect
-							qdel(blueeffect)
+				if(ismob(A) && !(A in flashers)) // don't flash if we're already doing an effect
+					var/mob/M = A
+					if(M.client)
+						INVOKE_ASYNC(src, .proc/blue_effect, M)
+
+/obj/effect/anomaly/bluespace/proc/blue_effect(mob/M)
+	var/obj/blueeffect = new /obj(src)
+	blueeffect.screen_loc = "WEST,SOUTH to EAST,NORTH"
+	blueeffect.icon = 'icons/effects/effects.dmi'
+	blueeffect.icon_state = "shieldsparkles"
+	blueeffect.layer = FLASH_LAYER
+	blueeffect.plane = FULLSCREEN_PLANE
+	blueeffect.mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	M.client.screen += blueeffect
+	sleep(20)
+	M.client.screen -= blueeffect
+	qdel(blueeffect)
 
 /////////////////////
 
@@ -280,7 +283,12 @@
 	S.rabid = TRUE
 	S.amount_grown = SLIME_EVOLUTION_THRESHOLD
 	S.Evolve()
-	offer_control(S)
+
+	var/list/mob/dead/observer/candidates = pollCandidatesForMob("Do you want to play as a pyroclastic anomaly slime?", ROLE_PAI, null, null, 100, S, POLL_IGNORE_PYROSLIME)
+	if(LAZYLEN(candidates))
+		var/mob/dead/observer/chosen = pick(candidates)
+		S.key = chosen.key
+		log_game("[key_name(S.key)] was made into a slime by pyroclastic anomaly at [AREACOORD(T)].")
 
 /////////////////////
 

@@ -39,12 +39,12 @@ effective or pretty fucking useless.
 		to_chat(user, "<span class='danger'>The mind batterer has been burnt out!</span>")
 		return
 
-	add_logs(user, null, "knocked down people in the area", src)
+	log_combat(user, null, "knocked down people in the area", src)
 
 	for(var/mob/living/carbon/human/M in urange(10, user, 1))
 		if(prob(50))
 
-			M.Knockdown(rand(200,400))
+			M.Paralyze(rand(200,400))
 			to_chat(M, "<span class='userdanger'>You feel a tremendous, paralyzing wave flood your mind.</span>")
 
 		else
@@ -69,7 +69,7 @@ effective or pretty fucking useless.
 */
 
 /obj/item/healthanalyzer/rad_laser
-	materials = list(MAT_METAL=400)
+	materials = list(/datum/material/iron=400)
 	var/irradiate = 1
 	var/intensity = 10 // how much damage the radiation does
 	var/wavelength = 10 // time it takes for the radiation to kick in, in seconds
@@ -82,7 +82,7 @@ effective or pretty fucking useless.
 	if(!irradiate)
 		return
 	if(!used)
-		add_logs(user, M, "irradiated", src)
+		log_combat(user, M, "irradiated", src)
 		var/cooldown = GetCooldown()
 		used = 1
 		icon_state = "health1"
