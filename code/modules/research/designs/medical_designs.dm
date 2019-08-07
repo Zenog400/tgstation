@@ -562,6 +562,17 @@
 	build_path = /obj/item/organ/lungs/cybernetic/upgraded
 	category = list("Misc", "Medical Designs")
 	departmental_flags = DEPARTMENTAL_FLAG_MEDICAL
+	
+/datum/design/robo_tongue
+	name = "Robotic Voicebox"
+	desc = "A voice synthesizer that can interface with organic lifeforms."
+	id = "robo-tongue"
+	build_type = PROTOLATHE | MECHFAB
+	construction_time = 35
+	materials = list(/datum/material/iron = 600, /datum/material/glass = 250)
+	build_path = /obj/item/organ/tongue/robot
+	category = list("Misc", "Medical Designs")
+	departmental_flags = DEPARTMENTAL_FLAG_MEDICAL
 
 /////////////////////
 ///Surgery Designs///
