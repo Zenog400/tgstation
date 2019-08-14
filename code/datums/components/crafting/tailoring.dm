@@ -121,6 +121,36 @@
 	tools = list(TOOL_SCREWDRIVER, TOOL_WIRECUTTER)
 	reqs = list(/obj/item/clothing/glasses/sunglasses/reagent = 1)
 	category = CAT_CLOTHING
+	
+/datum/crafting_recipe/togglehud
+	name = "Toggle HUD"
+	result = /obj/item/clothing/glasses/hud/toggle
+	time = 20
+	tools = list(TOOL_SCREWDRIVER, TOOL_WIRECUTTER)
+	reqs = list(/obj/item/clothing/glasses/science = 1,
+				  /obj/item/clothing/glasses/hud/diagnostic = 1,
+				  /obj/item/clothing/glasses/hud/security = 1,
+				  /obj/item/clothing/glasses/hud/health = 1,
+				  /obj/item/stack/cable_coil = 5)
+	category = CAT_CLOTHING
+	
+/datum/crafting_recipe/hudsuntoggle
+	name = "Toggle HUDsunglasses"
+	result = /obj/item/clothing/glasses/hud/toggle/sunglasses
+	time = 20
+	tools = list(TOOL_SCREWDRIVER, TOOL_WIRECUTTER)
+	reqs = list(/obj/item/clothing/glasses/hud/toggle = 1,
+				  /obj/item/clothing/glasses/sunglasses = 1,
+				  /obj/item/stack/cable_coil = 5)
+	category = CAT_CLOTHING
+	
+/datum/crafting_recipe/hudsuntoggleremoval
+	name = "Toggle HUD removal"
+	result = /obj/item/clothing/glasses/sunglasses
+	time = 20
+	tools = list(TOOL_SCREWDRIVER, TOOL_WIRECUTTER)
+	reqs = list(/obj/item/clothing/glasses/hud/toggle/sunglasses = 1)
+	category = CAT_CLOTHING
 
 /datum/crafting_recipe/ghostsheet
 	name = "Ghost Sheet"
