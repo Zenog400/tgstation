@@ -49,7 +49,7 @@
 /datum/chemical_reaction/slime/slimemutate
 	name = "Mutation Toxin"
 	id = "slimetoxin"
-	results = list(/datum/reagent/slime_toxin = 1)
+	results = list(/datum/reagent/mutationtoxin/jelly = 1)
 	required_reagents = list(/datum/reagent/toxin/plasma = 1)
 	required_other = TRUE
 	required_container = /obj/item/slime_extract/green
@@ -102,6 +102,38 @@
 	required_other = TRUE
 	required_container = /obj/item/slime_extract/green
 
+/datum/chemical_reaction/slime/slimeandroid
+	name = "Android Mutation Toxin"
+	id = "androidmuttoxin"
+	results = list(/datum/reagent/mutationtoxin/android = 1)
+	required_reagents = list(/datum/reagent/silicon = 1)
+	required_other = TRUE
+	required_container = /obj/item/slime_extract/green
+
+/datum/chemical_reaction/slime/slimepod
+	name = "Podperson Mutation Toxin"
+	id = "podmuttoxin"
+	results = list(/datum/reagent/mutationtoxin/pod = 1)
+	required_reagents = list(/datum/reagent/consumable/nutriment = 1)
+	required_other = TRUE
+	required_container = /obj/item/slime_extract/green
+
+/datum/chemical_reaction/slime/slimeshadow
+	name = "Shadowperson Mutation Toxin"
+	id = "shadowmuttoxin"
+	results = list(/datum/reagent/mutationtoxin/shadow = 1)
+	required_reagents = list(/datum/reagent/liquid_dark_matter = 1)
+	required_other = TRUE
+	required_container = /obj/item/slime_extract/green
+
+/datum/chemical_reaction/slime/slimeplasma
+	name = "Plasmaman Mutation Toxin"
+	id = "plasmamuttoxin"
+	results = list(/datum/reagent/mutationtoxin/plasma = 1)
+	required_reagents = list(/datum/reagent/phlogiston = 1)
+	required_other = TRUE
+	required_container = /obj/item/slime_extract/green
+	
 //Metal
 /datum/chemical_reaction/slime/slimemetal
 	name = "Slime Metal"
@@ -190,7 +222,7 @@
 	//BORK BORK BORK
 	var/turf/T = get_turf(holder.my_atom)
 
-	playsound(T, 'sound/effects/phasein.ogg', 100, 1)
+	playsound(T, 'sound/effects/phasein.ogg', 100, TRUE)
 
 	for(var/mob/living/carbon/C in viewers(T, null))
 		C.flash_act()
@@ -242,10 +274,12 @@
 /datum/chemical_reaction/slime/slimefoam
 	name = "Slime Foam"
 	id = "m_foam"
-	results = list(/datum/reagent/fluorosurfactant = 20, /datum/reagent/water = 20)
 	required_reagents = list(/datum/reagent/water = 5)
 	required_container = /obj/item/slime_extract/blue
 	required_other = TRUE
+
+/datum/chemical_reaction/slime/slimefoam/on_reaction(datum/reagents/holder)
+	holder.create_foam(/datum/effect_system/foam_spread,80, "<span class='danger'>[src] spews out foam!</span>")
 
 //Dark Blue
 /datum/chemical_reaction/slime/slimefreeze
